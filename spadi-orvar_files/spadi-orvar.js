@@ -6,7 +6,6 @@
 /////////////////////////////////////////////////////////////////
 var canvas;
 var gl;
-var ymove = 0.0;
 
 
 window.onload = function init() {
@@ -17,7 +16,7 @@ window.onload = function init() {
     if ( !gl ) { alert( "WebGL isn't available" ); }
     
     gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 0.8, 0.8, 0.8, 1.0 );
+    gl.clearColor( 0.8, 0.8, 0.8, 0.9 );
 
     //
     //  Load shaders and initialize attribute buffers
@@ -26,9 +25,9 @@ window.onload = function init() {
     gl.useProgram( program );
     
     var vertices = [
-        vec2( -0.2, -1.0 ),
-        vec2( 0.0, -0.6 ),
-        vec2( 0.2, -1.0 )
+        vec2( -0.1, -1.0 ),
+        vec2( 0.0, -0.75),
+        vec2( 0.1, -1.0)
     ];
     
     // Load the data into the GPU
@@ -43,17 +42,24 @@ window.onload = function init() {
 
     // Event listener for keyboard
     window.addEventListener("keydown", function(e){
+        var ymove = 0.0;
+        var xmove = 0.0;
         switch( e.keyCode ) {
-            case 40:	// vinstri ör
-                ymove = -0.04;
+            case 40:	// niður ör
+                ymove = -0.5;
                 break;
-            case 38:	// hægri ör
-                ymove = 0.04;
+            case 39: //hægri ör
+                xmove = 0.5;
                 break;
-            default:
-                ymove = 0.0;
+            case 38:	// upp ör
+                ymove = 0.5;
+                break;
+            case 37: // vinstri ör
+                xmove = -0.5;
+                break;
         }
         for(i=0; i<3; i++) {
+            vertices[i][0] += xmove;
             vertices[i][1] += ymove;
         }
 
