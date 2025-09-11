@@ -26,7 +26,7 @@ window.onload = function init() {
     
     var vertices = [
         vec2( -0.1, -1.0 ),
-        vec2( 0.0, -0.75),
+        vec2( 0.0, -0.85),
         vec2( 0.1, -1.0)
     ];
     
