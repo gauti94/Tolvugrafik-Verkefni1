@@ -42,25 +42,37 @@ window.onload = function init() {
 
     // Event listener for keyboard
     window.addEventListener("keydown", function(e){
-        var ymove = 0.0;
-        var xmove = 0.0;
+        var newYMove = 0.0;
+        var newXMove = 0.0;
         switch( e.keyCode ) {
             case 40:	// niður ör
-                ymove = -0.5;
+                newYMove = -0.5;
                 break;
             case 39: //hægri ör
-                xmove = 0.5;
+                newXMove = 0.25;
                 break;
             case 38:	// upp ör
-                ymove = 0.5;
+                newYMove = 0.5;
                 break;
             case 37: // vinstri ör
-                xmove = -0.5;
+                newXMove = -0.25;
                 break;
         }
-        for(i=0; i<3; i++) {
-            vertices[i][0] += xmove;
-            vertices[i][1] += ymove;
+        var canMove = true;
+        for(i = 0; i < 3; i++) {
+            var newX = vertices[i][0] + newXMove;
+            var newY = vertices[i][1] + newYMove;
+            if (newX < -1.0 || newX > 1.0 || newY< -1.0 || newY> 1.0) {
+                canMove = false;
+                break;
+            }
+        }
+        if (canMove) {
+            for( i = 0; i < 3; i++) {
+                vertices[i][0] += newXMove;
+                vertices[i][1] += newYMove;
+
+            }
         }
 
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(vertices));
