@@ -46,13 +46,13 @@ window.onload = function init() {
         var newXMove = 0.0;
         switch( e.keyCode ) {
             case 40:	// niður ör
-                newYMove = -0.5;
+                newYMove = -0.4;
                 break;
             case 39: //hægri ör
                 newXMove = 0.25;
                 break;
             case 38:	// upp ör
-                newYMove = 0.5;
+                newYMove = 0.4;
                 break;
             case 37: // vinstri ör
                 newXMove = -0.25;
