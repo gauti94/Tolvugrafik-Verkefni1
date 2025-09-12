@@ -1,10 +1,19 @@
 #gl-canvas {
     border: 2px solid black;
-    background: repeating-linear-gradient(
-        to bottom,
-        transparent 0%,
-        transparent 19.8%,
-        black 20%,
-        black 20.2%
-    );
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0%,
+            transparent 19.8%,
+            black 20%,
+            black 20%
+        ),
+        linear-gradient(
+            to bottom,
+            white 0%, white 20%,
+            #2f2f2f 20%, #2f2f2f 40%,
+            #3a3a3a 40%, #3a3a3a 60%,
+            #2f2f2f 60%, #2f2f2f 80%,
+            white 80%, white 100% 
+        );
 }
