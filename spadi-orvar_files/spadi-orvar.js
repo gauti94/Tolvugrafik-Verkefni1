@@ -6,10 +6,29 @@
 /////////////////////////////////////////////////////////////////
 var canvas;
 var gl;
-var theta = 0.5;
-var vertices = [vec2(-0.1, -0.95),
-    vec2(0.0, -0.65),
-    vec2(0.1, -0.95)];
+var vPosition;
+var vertices = [vec2(-0.1, -0.95), vec2(0.0, -0.65), vec2(0.1, -0.95)];
+var verticesCar1 = [
+  vec2(-0.85, -0.55),
+  vec2(-0.85, -0.30),
+  vec2(-0.65, -0.55),
+  vec2(-0.65, -0.30),
+];
+var verticesCar2 = [
+  vec2(-0.85, -0.15),
+  vec2(-0.85, 0.1),
+  vec2(-0.65, -0.15),
+  vec2(-0.65, 0.1),
+];
+var verticesCar3 = [
+  vec2(-0.85, 0.50),
+  vec2(-0.85, 0.25),
+  vec2(-0.65, 0.50),
+  vec2(-0.65, 0.25),
+];
+var bufferIdFrog;
+var bufferCarId1;
+var bufferCarId2;
 var atTop = false;
 var atBottom = false;
 var pointingUp = true;
@@ -33,12 +52,24 @@ window.onload = function init() {
   gl.useProgram(program);
 
   // Load the data into the GPU
-  var bufferId = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
+  bufferIdFrog = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdFrog);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(vertices), gl.DYNAMIC_DRAW);
 
+  bufferCarId1 = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId1);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(verticesCar1), gl.DYNAMIC_DRAW);
+
+  bufferCarId2 = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId2);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(verticesCar2), gl.DYNAMIC_DRAW);
+
+  bufferCarId3 = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId3);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(verticesCar3), gl.DYNAMIC_DRAW);
+
   // Associate out shader variables with our data buffer
-  var vPosition = gl.getAttribLocation(program, "vPosition");
+  vPosition = gl.getAttribLocation(program, "vPosition");
   gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vPosition);
 
@@ -76,7 +107,7 @@ window.onload = function init() {
         vertices[i][0] += newXMove;
         vertices[i][1] += newYMove;
       }
-      
+
       if (vertices[1][1] >= 0.94) {
         if (!atTop) {
           atTop = true;
@@ -90,7 +121,7 @@ window.onload = function init() {
       } else {
         atTop = false;
       }
-      
+
       if (vertices[1][1] <= -0.94) {
         if (!atBottom) {
           atBottom = true;
@@ -107,7 +138,7 @@ window.onload = function init() {
       console.log("atTop:", atTop);
       console.log("atBottom:", atBottom);
     }
-
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdFrog);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(vertices));
   });
 
@@ -116,7 +147,22 @@ window.onload = function init() {
 
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdFrog);
+  gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId1);
+  gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId2);
+  gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId3);
+  gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
 
   window.requestAnimFrame(render);
 }
