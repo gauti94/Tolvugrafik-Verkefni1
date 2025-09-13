@@ -33,6 +33,9 @@ var atTop = false;
 var atBottom = false;
 var pointingUp = true;
 var pointingDown = false;
+var car1Direction = 1;
+var car2Direction = 1;
+var car3Direction = 1;
 
 window.onload = function init() {
   canvas = document.getElementById("gl-canvas");
@@ -151,17 +154,55 @@ function render() {
   gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 
+  if(verticesCar1[2][0] >= 0.95) {
+    car1Direction = -1;
+  }
+  else if(verticesCar1[0][0] <= -0.95) {
+    car1Direction = 1;
+  } 
+
+  for(i = 0; i < 4; i++) {
+    verticesCar1[i][0] += 0.003 * car1Direction;
+  }
+
+  if(verticesCar2[2][0] >= 0.95) {
+    car2Direction = -1;
+  }
+  else if(verticesCar2[0][0] <= -0.95) {
+    car2Direction = 1;
+  } 
+
+  for(i = 0; i < 4; i++) {
+    verticesCar2[i][0] += 0.004 * car2Direction;
+  }
+
+  if(verticesCar3[2][0] >= 0.95) {
+    car3Direction = -1;
+  }
+  else if(verticesCar3[0][0] <= -0.95) {
+    car3Direction = 1;
+  } 
+
+  for(i = 0; i < 4; i++) {
+    verticesCar3[i][0] += 0.009 * car3Direction;
+  }
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId1);
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(verticesCar1));
   gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0);
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId2);
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(verticesCar2));
   gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0);
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId3);
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(verticesCar3));
   gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0);
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+
+
 
 
   window.requestAnimFrame(render);
