@@ -7,9 +7,22 @@
 var canvas;
 var gl;
 var vPosition;
+var locColor;
 var score = 0;
+var frogColor = vec4(0.0, 1.0, 0.0, 1.0);
+var carColor1 = vec4(1.0, 0.0, 0.0, 1.0);
+var carColor11 = vec4(0.5, 0.5, 0.5, 1.0);
+var carColor2 = vec4(0.0, 0.0, 1.0, 1.0);
+var carColor3 = vec4(1.0, 0.0, 1.0, 1.0);
+
 var vertices = [vec2(-0.1, -0.95), vec2(0.0, -0.65), vec2(0.1, -0.95)];
 var verticesCar1 = [
+  vec2(-0.85, -0.55),
+  vec2(-0.85, -0.30),
+  vec2(-0.65, -0.55),
+  vec2(-0.65, -0.30),
+];
+var verticesCar11 = [
   vec2(-0.85, -0.55),
   vec2(-0.85, -0.30),
   vec2(-0.65, -0.55),
@@ -29,12 +42,15 @@ var verticesCar3 = [
 ];
 var bufferIdFrog;
 var bufferCarId1;
+var bufferCarId11;
 var bufferCarId2;
+var bufferCarId3;
 var atTop = false;
 var atBottom = false;
 var pointingUp = true;
 var pointingDown = false;
 var car1Direction = 1;
+var car11Direction = 1;
 var car2Direction = 1;
 var car3Direction = 1;
 
@@ -64,6 +80,10 @@ window.onload = function init() {
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId1);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(verticesCar1), gl.DYNAMIC_DRAW);
 
+  bufferCarId11 = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId11);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(verticesCar11), gl.DYNAMIC_DRAW);
+
   bufferCarId2 = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId2);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(verticesCar2), gl.DYNAMIC_DRAW);
@@ -76,6 +96,8 @@ window.onload = function init() {
   vPosition = gl.getAttribLocation(program, "vPosition");
   gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vPosition);
+
+  locColor = gl.getUniformLocation( program, "rcolor" );
 
   // Event listener for keyboard
   window.addEventListener("keydown", function (e) {
@@ -155,6 +177,7 @@ function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdFrog);
   gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0);
+  gl.uniform4fv(locColor, flatten(frogColor));
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 
   if(verticesCar1[2][0] >= 0.95) {
@@ -168,6 +191,17 @@ function render() {
     verticesCar1[i][0] += 0.003 * car1Direction;
   }
 
+  if(verticesCar11[2][0] >= 0.95) {
+    car11Direction = -1;
+  }
+  else if(verticesCar11[0][0] <= -0.95) {
+    car11Direction = 1;
+  } 
+
+  for(i = 0; i < 4; i++) {
+    verticesCar11[i][0] += 0.006 * car11Direction;
+  }
+
   if(verticesCar2[2][0] >= 0.95) {
     car2Direction = -1;
   }
@@ -176,7 +210,7 @@ function render() {
   } 
 
   for(i = 0; i < 4; i++) {
-    verticesCar2[i][0] += 0.004 * car2Direction;
+    verticesCar2[i][0] += 0.008 * car2Direction;
   }
 
   if(verticesCar3[2][0] >= 0.95) {
@@ -187,21 +221,30 @@ function render() {
   } 
 
   for(i = 0; i < 4; i++) {
-    verticesCar3[i][0] += 0.009 * car3Direction;
+    verticesCar3[i][0] += 0.015 * car3Direction;
   }
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId1);
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(verticesCar1));
   gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0);
+  gl.uniform4fv(locColor, flatten(carColor1));
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId11);
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(verticesCar11));
+  gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0);
+  gl.uniform4fv(locColor, flatten(carColor11));
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId2);
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(verticesCar2));
   gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0);
+  gl.uniform4fv(locColor, flatten(carColor2));
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferCarId3);
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(verticesCar3));
   gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0);
+  gl.uniform4fv(locColor, flatten(carColor3));
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
   if(checkIntersect()) {
@@ -240,6 +283,11 @@ function checkIntersect() {
   var car1MaxX = Math.max(verticesCar1[0][0], verticesCar1[1][0], verticesCar1[2][0], verticesCar1[3][0]);
   var car1MinY = Math.min(verticesCar1[0][1], verticesCar1[1][1], verticesCar1[2][1], verticesCar1[3][1]);
   var car1MaxY = Math.max(verticesCar1[0][1], verticesCar1[1][1], verticesCar1[2][1], verticesCar1[3][1]);
+
+  var car11MinX = Math.min(verticesCar11[0][0], verticesCar11[1][0], verticesCar11[2][0], verticesCar11[3][0]);
+  var car11MaxX = Math.max(verticesCar11[0][0], verticesCar11[1][0], verticesCar11[2][0], verticesCar11[3][0]);
+  var car11MinY = Math.min(verticesCar11[0][1], verticesCar11[1][1], verticesCar11[2][1], verticesCar11[3][1]);
+  var car11MaxY = Math.max(verticesCar11[0][1], verticesCar11[1][1], verticesCar11[2][1], verticesCar11[3][1]);
   
   var car2MinX = Math.min(verticesCar2[0][0], verticesCar2[1][0], verticesCar2[2][0], verticesCar2[3][0]);
   var car2MaxX = Math.max(verticesCar2[0][0], verticesCar2[1][0], verticesCar2[2][0], verticesCar2[3][0]);
@@ -252,10 +300,16 @@ function checkIntersect() {
   var car3MaxY = Math.max(verticesCar3[0][1], verticesCar3[1][1], verticesCar3[2][1], verticesCar3[3][1]);
 
   var car1Collision = !(frogMaxX < car1MinX || frogMinX > car1MaxX || frogMaxY < car1MinY || frogMinY > car1MaxY);
+  var car11Collision = !(frogMaxX < car11MinX || frogMinX > car11MaxX || frogMaxY < car11MinY || frogMinY > car11MaxY);
+
   var car2Collision = !(frogMaxX < car2MinX || frogMinX > car2MaxX || frogMaxY < car2MinY || frogMinY > car2MaxY);
   var car3Collision = !(frogMaxX < car3MinX || frogMinX > car3MaxX || frogMaxY < car3MinY || frogMinY > car3MaxY);
 
   if(car1Collision) {
+    console.log("Árekstur: Bíll 1");
+    return true;
+  }
+  if(car11Collision) {
     console.log("Árekstur: Bíll 1");
     return true;
   }

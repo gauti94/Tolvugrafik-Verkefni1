@@ -17,11 +17,11 @@
     <script id="fragment-shader" type="x-shader/x-fragment">
 
       precision mediump float;
-      varying vec4 fColor;
+      uniform vec4 rcolor;
 
       void main()
       {
-          gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+          gl_FragColor = rcolor;
       }
     </script>
 
@@ -41,7 +41,7 @@
   </head>
   <body>
     <h2>Frogger</h2>
-    <h4>Score: <span id="score">0</span></h4>
     <canvas id="gl-canvas" width="1000" height="600"> </canvas>
+    <h4>Score: <span id="score">0</span></h4>
   </body>
 </html>
