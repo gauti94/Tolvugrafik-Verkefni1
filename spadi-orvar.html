@@ -1,35 +1,47 @@
 <!DOCTYPE html>
 <!-- saved from url=(0058)https://hjalmtyr.github.io/forrit25/Angel/spadi-orvar.html -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="./spadi-orvar_files/styles.css">
-<script id="vertex-shader" type="x-shader/x-vertex">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="./spadi-orvar_files/styles.css" />
+    <script id="vertex-shader" type="x-shader/x-vertex">
 
-attribute vec4 vPosition;
+      attribute vec4 vPosition;
 
-void main()
-{
-    gl_Position = vPosition;
-}
-</script>
+      void main()
+      {
+          gl_Position = vPosition;
+      }
+    </script>
 
-<script id="fragment-shader" type="x-shader/x-fragment">
+    <script id="fragment-shader" type="x-shader/x-fragment">
 
-precision mediump float;
-varying vec4 fColor;
+      precision mediump float;
+      varying vec4 fColor;
 
-void main()
-{
-    gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
-}
-</script>
+      void main()
+      {
+          gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+      }
+    </script>
 
-<script type="text/javascript" src="./spadi-orvar_files/webgl-utils.js"></script>
-<script type="text/javascript" src="./spadi-orvar_files/initShaders.js"></script>
-<script type="text/javascript" src="./spadi-orvar_files/MV.js"></script>
-<script type="text/javascript" src="./spadi-orvar_files/spadi-orvar.js"></script>
-
-</head><body>
-<canvas id="gl-canvas" width="1000" height="600">
-
-
-</canvas></body></html>
+    <script
+      type="text/javascript"
+      src="./spadi-orvar_files/webgl-utils.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="./spadi-orvar_files/initShaders.js"
+    ></script>
+    <script type="text/javascript" src="./spadi-orvar_files/MV.js"></script>
+    <script
+      type="text/javascript"
+      src="./spadi-orvar_files/spadi-orvar.js"
+    ></script>
+  </head>
+  <body>
+    <h2>Frogger</h2>
+    <h4>Score: <span id="score">0</span></h4>
+    <canvas id="gl-canvas" width="1000" height="600"> </canvas>
+  </body>
+</html>

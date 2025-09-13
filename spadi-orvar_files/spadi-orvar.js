@@ -7,6 +7,7 @@
 var canvas;
 var gl;
 var vPosition;
+var score = 0;
 var vertices = [vec2(-0.1, -0.95), vec2(0.0, -0.65), vec2(0.1, -0.95)];
 var verticesCar1 = [
   vec2(-0.85, -0.55),
@@ -114,6 +115,7 @@ window.onload = function init() {
       if (vertices[1][1] >= 0.94) {
         if (!atTop) {
           atTop = true;
+          keepScore();
           var tempY = vertices[1][1];
           vertices[1][1] = vertices[0][1];
           vertices[0][1] = tempY;
@@ -128,6 +130,7 @@ window.onload = function init() {
       if (vertices[1][1] <= -0.94) {
         if (!atBottom) {
           atBottom = true;
+          keepScore();
           var tempY = vertices[1][1];
           vertices[1][1] = vertices[0][1];
           vertices[0][1] = tempY;
@@ -201,9 +204,79 @@ function render() {
   gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0);
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-
-
+  if(checkIntersect()) {
+    reset();
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdFrog);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(vertices));
+  }
 
 
   window.requestAnimFrame(render);
+}
+
+function keepScore() {
+  if(atTop || atBottom) {
+    score++;
+    updateScore();
+    console.log(score);
+  }
+}
+
+function updateScore() {
+  var scoreElement = document.getElementById("score");
+  if(scoreElement) {
+    scoreElement.textContent = score;
+  }
+}
+
+function checkIntersect() {
+  var frogMinX = Math.min(vertices[0][0], vertices[1][0], vertices[2][0]);
+  var frogMaxX = Math.max(vertices[0][0], vertices[1][0], vertices[2][0]);
+  var frogMinY = Math.min(vertices[0][1], vertices[1][1], vertices[2][1]);
+  var frogMaxY = Math.max(vertices[0][1], vertices[1][1], vertices[2][1]);
+
+
+  var car1MinX = Math.min(verticesCar1[0][0], verticesCar1[1][0], verticesCar1[2][0], verticesCar1[3][0]);
+  var car1MaxX = Math.max(verticesCar1[0][0], verticesCar1[1][0], verticesCar1[2][0], verticesCar1[3][0]);
+  var car1MinY = Math.min(verticesCar1[0][1], verticesCar1[1][1], verticesCar1[2][1], verticesCar1[3][1]);
+  var car1MaxY = Math.max(verticesCar1[0][1], verticesCar1[1][1], verticesCar1[2][1], verticesCar1[3][1]);
+  
+  var car2MinX = Math.min(verticesCar2[0][0], verticesCar2[1][0], verticesCar2[2][0], verticesCar2[3][0]);
+  var car2MaxX = Math.max(verticesCar2[0][0], verticesCar2[1][0], verticesCar2[2][0], verticesCar2[3][0]);
+  var car2MinY = Math.min(verticesCar2[0][1], verticesCar2[1][1], verticesCar2[2][1], verticesCar2[3][1]);
+  var car2MaxY = Math.max(verticesCar2[0][1], verticesCar2[1][1], verticesCar2[2][1], verticesCar2[3][1]);
+
+  var car3MinX = Math.min(verticesCar3[0][0], verticesCar3[1][0], verticesCar3[2][0], verticesCar3[3][0]);
+  var car3MaxX = Math.max(verticesCar3[0][0], verticesCar3[1][0], verticesCar3[2][0], verticesCar3[3][0]);
+  var car3MinY = Math.min(verticesCar3[0][1], verticesCar3[1][1], verticesCar3[2][1], verticesCar3[3][1]);
+  var car3MaxY = Math.max(verticesCar3[0][1], verticesCar3[1][1], verticesCar3[2][1], verticesCar3[3][1]);
+
+  var car1Collision = !(frogMaxX < car1MinX || frogMinX > car1MaxX || frogMaxY < car1MinY || frogMinY > car1MaxY);
+  var car2Collision = !(frogMaxX < car2MinX || frogMinX > car2MaxX || frogMaxY < car2MinY || frogMinY > car2MaxY);
+  var car3Collision = !(frogMaxX < car3MinX || frogMinX > car3MaxX || frogMaxY < car3MinY || frogMinY > car3MaxY);
+
+  if(car1Collision) {
+    console.log("Árekstur: Bíll 1");
+    return true;
+  }
+  if(car2Collision) {
+    console.log("Árekstur: Bíll 2");
+    return true;
+  }
+  if(car3Collision) {
+    console.log("Árekstur: Bíll 3");
+    return true;
+  }
+  return false;
+}
+
+function reset() {
+  vertices = [vec2(-0.1, -0.95), vec2(0.0, -0.65), vec2(0.1, -0.95)];
+  score = 0;
+  pointingUp = true;
+  pointingDown = false;
+  atTop = false;
+  atBottom = false;
+  updateScore();
+  
 }
